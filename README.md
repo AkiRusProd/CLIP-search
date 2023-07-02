@@ -23,6 +23,13 @@ The implementation provides two methods for finding similar images:
 You can choose between these methods based on your requirements for speed and accuracy.
 
 
+
+
 This implementation utilizes the [Hugging Face CLIP model](https://huggingface.co/openai/clip-vit-base-patch32). The [Faiss](https://github.com/facebookresearch/faiss) library is used for clustering, and the web UI is built using [Gradio](https://gradio.app/).
+
+<p align="center">
+<img src="images/screen.png" width=100%>
+</p>
+
 
 Read more about CLIP at https://github.com/openai/CLIP.

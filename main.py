@@ -43,6 +43,9 @@ def search_by_image(image, top_k, use_cluster_search):
     return images
 
 def scan_dir(path):
+    if path is None or not os.path.exists(path):
+        return
+
     scan_directory(path)
 
     global df, df_image_embeds
