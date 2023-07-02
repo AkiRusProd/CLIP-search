@@ -75,7 +75,7 @@ with gr.Blocks() as webui:
             scan_dir_btn = gr.Button("Scan directory", variant="primary")
 
   
-        gallery = gr.Gallery(label = "Gallery", show_label=False).style(columns=3, rows = 3, height="auto", preview = False)
+        gallery = gr.Gallery(label = "Gallery", show_label=False).style(columns=3, rows = 2, height="auto", preview = False)
 
     search_by_text_btn.click(
         search_by_text, 
