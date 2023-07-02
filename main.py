@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 from PIL import Image
-from dir_scaning import get_top_k_text_similarities, get_top_k_image_similarities, scan_directory
+from dir_scanning import get_top_k_text_similarities, get_top_k_image_similarities, scan_directory
 
 
 if not os.path.exists('embed_data'):
