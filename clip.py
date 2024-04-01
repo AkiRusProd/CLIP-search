@@ -4,9 +4,12 @@ import numpy as np
 import os
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel, CLIPTokenizer
+from dotenv import dotenv_values
+
+env = dotenv_values('.env')
 
 # your models cache will be stored here
-os.environ['HUGGINGFACE_HUB_CACHE'] = 'D:\\Code\\Huggingface_cache\\'
+os.environ['HUGGINGFACE_HUB_CACHE'] = env['HUGGINGFACE_HUB_CACHE']
 
 model_id = "openai/clip-vit-base-patch32"
 device = "cuda" if torch.cuda.is_available() else "cpu"

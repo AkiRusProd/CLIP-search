@@ -7,13 +7,15 @@ from tqdm import tqdm
 from clip import clip_searcher
 from clusterer import image_indexer
 from PIL import Image
+from dotenv import dotenv_values
 
+env = dotenv_values('.env')
 
 tqdm.pandas()
 
-os.environ['HUGGINGFACE_HUB_CACHE'] = 'D:\\Code\\Huggingface_cache\\'
+os.environ['HUGGINGFACE_HUB_CACHE'] = env['HUGGINGFACE_HUB_CACHE']
 
-path = 'D:\\Code\\Diffusion_Images'
+# path = env['DEFAULT_IMAGES_PATH']
 
 def scan_directory(path):
     df = pd.DataFrame(columns=['image_path'])

@@ -5,10 +5,14 @@ import os
 
 from PIL import Image
 from dir_scanning import get_top_k_text_similarities, get_top_k_image_similarities, scan_directory
+from dotenv import dotenv_values
 
+env = dotenv_values('.env')
 
-if not os.path.exists('embed_data'):
-    os.mkdir('embed_data')
+path = env['DEFAULT_IMAGES_PATH']
+
+if not os.path.exists(path):
+    os.mkdir(path)
   
 try:
     df = pd.read_csv('embed_data/df.csv', sep='\t')
@@ -54,6 +58,8 @@ def scan_dir(path):
     df_image_embeds = np.load('embed_data/df_image_embeds.npy')
     df_image_embeds = [x.flatten() for x in df_image_embeds]
 
+    return path
+
 
 with gr.Blocks() as webui:
     gr.Markdown("CLIP Searcher")
@@ -63,7 +69,7 @@ with gr.Blocks() as webui:
             text = gr.Textbox(label = "Text", info = "Text to search")
 
             with gr.Row():
-                image = gr.Image(label = "Image", info = "Image to search")
+                image = gr.Image(label = "Image")
 
                 with gr.Column():
                     top_k_slider = gr.Slider(label="Top K", minimum=1, maximum=50, step=1, value=5, info = "Top K closest results to the query")
@@ -71,11 +77,11 @@ with gr.Blocks() as webui:
                     search_by_text_btn = gr.Button("Search by text")
                     search_by_image_btn = gr.Button("Search by image")
 
-            path = gr.Textbox(label = "Path", info = "Path with images to scan")
+            path = gr.Textbox(label = "Path", info = "Path with images to scan", value=path)
             scan_dir_btn = gr.Button("Scan directory", variant="primary")
 
   
-        gallery = gr.Gallery(label = "Gallery", show_label=False).style(columns=3, rows = 2, height="auto", preview = False)
+        gallery = gr.Gallery(label = "Gallery", show_label=False, columns=3, rows = 2, height="auto", preview = False)
 
     search_by_text_btn.click(
         search_by_text, 

@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "clip-search"
+version = "0.1.0"
+description = ""
+authors = ["AkiRusProd <akirusprod@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+faiss-cpu = "1.7.4"
+gradio = "4.24.0"
+numpy = "1.24.0"
+pandas = "1.3.5"
+Pillow = "9.5.0"
+torch = "2.0.0"
+tqdm = "4.65.0"
+transformers = "4.30.2"
+python-dotenv = "^1.0.1"
+
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

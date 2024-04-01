@@ -1,6 +1,11 @@
+import os
 import faiss
 import numpy as np
+from dotenv import dotenv_values
 
+env = dotenv_values('.env')
+
+index_path = env['INDEX_PATH']
 
 class ImageIndexer:
     def __init__(self):
@@ -19,7 +24,7 @@ class ImageIndexer:
         self.index.train(image_embeds)
         self.index.add(image_embeds)
 
-        faiss.write_index(self.index, 'embed_data/faiss_clusters.index')
+        faiss.write_index(self.index, os.path.join(index_path, 'faiss_clusters.index'))
 
         return self.index
 
@@ -27,7 +32,7 @@ class ImageIndexer:
         if type(image_embeds) != np.ndarray:
             image_embeds = np.array(image_embeds)
         if self.index is None:
-            self.index = faiss.read_index('embed_data/faiss_clusters.index')
+            self.index = faiss.read_index(os.path.join(index_path, 'faiss_clusters.index'))
 
         D, I = self.index.search(embed, k)
         return D[0], I[0], image_embeds[I[0]]
