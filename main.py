@@ -4,12 +4,18 @@ import numpy as np
 import os
 
 from PIL import Image
-from dir_scanning import get_top_k_text_similarities, get_top_k_image_similarities, scan_directory
+from dir_scanning import SearchMechanism
+from clip import CLIPSearcher
+from clusterer import ImageIndexer
 from dotenv import dotenv_values
 
 env = dotenv_values('.env')
 
 path = env['DEFAULT_IMAGES_PATH']
+index_path = env['INDEX_PATH']
+
+# your models cache will be stored here
+os.environ['HUGGINGFACE_HUB_CACHE'] = env['HUGGINGFACE_HUB_CACHE']
 
 if not os.path.exists(path):
     os.mkdir(path)
@@ -26,7 +32,7 @@ def search_by_text(text, top_k, use_cluster_search):
     if df is None or df_image_embeds is None:
         return
 
-    top_k_df = get_top_k_text_similarities(text, df, df_image_embeds, top_k, use_cluster_search)
+    top_k_df = search_mechanism.get_top_k_text_similarities(text, df, df_image_embeds, top_k, use_cluster_search)
 
     images = []
     for i, row in top_k_df.iterrows():
@@ -38,7 +44,7 @@ def search_by_image(image, top_k, use_cluster_search):
     if df is None or df_image_embeds is None:
         return
 
-    top_k_df = get_top_k_image_similarities(image, df, df_image_embeds, top_k, use_cluster_search)
+    top_k_df = search_mechanism.get_top_k_image_similarities(image, df, df_image_embeds, top_k, use_cluster_search)
 
     images = []
     for i, row in top_k_df.iterrows():
@@ -50,7 +56,7 @@ def scan_dir(path):
     if path is None or not os.path.exists(path):
         return
 
-    scan_directory(path)
+    search_mechanism.scan_directory(path)
 
     global df, df_image_embeds
 
@@ -60,6 +66,9 @@ def scan_dir(path):
 
     return path
 
+clip_searcher = CLIPSearcher()
+image_indexer = ImageIndexer(index_path)
+search_mechanism = SearchMechanism(clip_searcher, image_indexer)
 
 with gr.Blocks() as webui:
     gr.Markdown("CLIP Searcher")
