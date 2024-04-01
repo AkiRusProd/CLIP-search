@@ -34,7 +34,7 @@ class SearchMechanism:
 
     def scan_directory(self, path):
         if path is None or not os.path.exists(path):
-            return
+            raise Exception("Path does not exist")
 
         df = pd.DataFrame(columns=['image_path'])
         df_image_embeds = []

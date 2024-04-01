@@ -8,7 +8,6 @@ class ImageIndexer:
         self.index = None
         self.index_path = index_path
 
-
     def fit(self, image_embeds, num_clusters = None, m = 32):
         if type(image_embeds) != np.ndarray:
             image_embeds = np.array(image_embeds)
