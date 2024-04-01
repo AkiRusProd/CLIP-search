@@ -1,10 +1,8 @@
-import gradio as gr
-import pandas as pd
-import numpy as np
 import os
+import gradio as gr
 
 from PIL import Image
-from dir_scanning import SearchMechanism
+from db import SearchMechanism
 from clip import CLIPSearcher
 from clusterer import ImageIndexer
 from dotenv import dotenv_values
@@ -17,52 +15,24 @@ index_path = env['INDEX_PATH']
 # your models cache will be stored here
 os.environ['HUGGINGFACE_HUB_CACHE'] = env['HUGGINGFACE_HUB_CACHE']
 
-if not os.path.exists(path):
-    os.mkdir(path)
-  
-try:
-    df = pd.read_csv('embed_data/df.csv', sep='\t')
-    df_image_embeds = np.load('embed_data/df_image_embeds.npy')
-    df_image_embeds = [x.flatten() for x in df_image_embeds]
-except:
-    df = None
-    df_image_embeds = None
 
 def search_by_text(text, top_k, use_cluster_search):
-    if df is None or df_image_embeds is None:
-        return
-
-    top_k_df = search_mechanism.get_top_k_text_similarities(text, df, df_image_embeds, top_k, use_cluster_search)
-
-    images = []
-    for i, row in top_k_df.iterrows():
-        images.append(Image.open(row['image_path']))
+    top_k_df = search_mechanism.query_by_text(text, top_k, use_cluster_search)
+    images = [Image.open(row['image_path']) for _, row in top_k_df.iterrows()]
 
     return images
 
 def search_by_image(image, top_k, use_cluster_search):
-    if df is None or df_image_embeds is None:
-        return
-
-    top_k_df = search_mechanism.get_top_k_image_similarities(image, df, df_image_embeds, top_k, use_cluster_search)
-
-    images = []
-    for i, row in top_k_df.iterrows():
-        images.append(Image.open(row['image_path']))
+    top_k_df = search_mechanism.query_by_image(image, top_k, use_cluster_search)
+    images = [Image.open(row['image_path']) for _, row in top_k_df.iterrows()]
 
     return images
 
 def scan_dir(path):
     if path is None or not os.path.exists(path):
-        return
+        return gr.Info("Path does not exist")
 
     search_mechanism.scan_directory(path)
-
-    global df, df_image_embeds
-
-    df = pd.read_csv('embed_data/df.csv', sep='\t')
-    df_image_embeds = np.load('embed_data/df_image_embeds.npy')
-    df_image_embeds = [x.flatten() for x in df_image_embeds]
 
     return path
 
