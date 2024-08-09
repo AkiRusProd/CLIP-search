@@ -1,6 +1,6 @@
 import os
 import gradio as gr
-
+from pathlib import Path
 from PIL import Image
 from db import SearchMechanism
 from clip import CLIPSearcher
@@ -32,7 +32,7 @@ def scan_dir(path):
     if path is None or not os.path.exists(path):
         return gr.Info("Path does not exist")
 
-    search_mechanism.scan_directory(path)
+    search_mechanism.scan_directory(Path(path))
 
     return path
 
